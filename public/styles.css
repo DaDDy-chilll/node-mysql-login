@@ -1,0 +1,33 @@
+body {
+  background-color: skyblue;
+  /* color: white; */
+}
+nav {
+  background-color: rgb(35, 35, 88);
+  color: white;
+  padding: 30px 60px;
+  display: flex;
+  justify-content: space-between;
+}
+
+nav ul {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+nav li {
+  list-style: none;
+}
+
+nav li a {
+  color: white;
+  text-decoration: none;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  padding: 5px 8px;
+}
+
+nav li a:hover {
+  color: rgb(41, 41, 162);
+}
