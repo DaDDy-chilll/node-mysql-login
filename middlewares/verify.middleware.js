@@ -7,15 +7,14 @@ const checkToken = (req, res, next) => {
     });
   }
   jwt.verify(accessToken, process.env.SECRET, (error, result) => {
-    console.log(result);
-    if (!error) {
-      return res.render("index");
-    } else {
+    if (error) {
       return res.render("message", {
         message: "Please Login",
       });
     }
+    res.data = result;
+
+    next();
   });
-  next();
 };
 module.exports = checkToken;

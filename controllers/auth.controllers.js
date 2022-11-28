@@ -20,7 +20,7 @@ register = (req, res) => {
           messge: "Password Do Not Match",
         });
       }
-      const accessToken = jwt.sign({ email }, process.env.SECRET, {
+      const accessToken = jwt.sign({ email, name }, process.env.SECRET, {
         expiresIn: "10m",
       });
       let hashedPassword = await bcrypt.hash(pwd, 8);
@@ -65,7 +65,7 @@ login = (req, res) => {
           return res.render("login", { messge: "Incorrect Password" });
         } else {
           const accessToken = jwt.sign(
-            { email: data.email },
+            { email: data.email, name: data.username },
             process.env.SECRET,
             { expiresIn: "10m" }
           );
@@ -76,6 +76,7 @@ login = (req, res) => {
     }
   );
 };
+
 module.exports = {
   register,
   login,

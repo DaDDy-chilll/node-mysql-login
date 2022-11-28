@@ -1,7 +1,8 @@
 const express = require("express");
 const cookie = require("cookie-parser");
-const db = require("./database");
 const path = require("path");
+const db = require("./database");
+const PORT = process.env.PORT;
 
 const router = require("./routes/pages");
 const auth = require("./routes/auth");
@@ -23,6 +24,6 @@ app.set("view engine", "hbs");
 app.use("/", router);
 app.use("/auth", auth);
 
-app.listen(3000, () => {
-  console.log(`Server is running on PORT:3000`);
+app.listen(PORT, () => {
+  console.log(`Server is running on PORT:${PORT}`);
 });
