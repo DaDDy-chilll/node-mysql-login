@@ -1,4 +1,5 @@
 const express = require("express");
+const cookie = require("cookie-parser");
 const db = require("./database");
 const path = require("path");
 
@@ -17,6 +18,7 @@ db.connect((err) => {
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cookie());
 app.set("view engine", "hbs");
 app.use("/", router);
 app.use("/auth", auth);

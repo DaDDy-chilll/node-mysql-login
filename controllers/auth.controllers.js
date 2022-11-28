@@ -2,7 +2,7 @@ const db = require("../database");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-exports.register = (req, res) => {
+register = (req, res) => {
   const { name, email, pwd, confpwd } = req.body;
   db.query(
     "SELECT email FROM users WHERE email = ?",
@@ -20,9 +20,10 @@ exports.register = (req, res) => {
           messge: "Password Do Not Match",
         });
       }
-
+      const accessToken = jwt.sign({ email }, process.env.SECRET, {
+        expiresIn: "10m",
+      });
       let hashedPassword = await bcrypt.hash(pwd, 8);
-      console.log(hashedPassword);
       db.query(
         "INSERT INTO users SET ?",
         {
@@ -34,13 +35,48 @@ exports.register = (req, res) => {
           if (err) {
             console.log(err);
           } else {
-            console.log(result);
-            return res.render("register", {
-              messge: "User registerd",
+            res.cookie("accessToken", accessToken, { httpOnly: true });
+            return res.render("index", {
+              name,
+              action: "SignUp",
             });
           }
         }
       );
     }
   );
+};
+
+login = (req, res) => {
+  const { email, pwd } = req.body;
+  db.query(
+    "SELECT * FROM users WHERE email=?",
+    [email],
+    async (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.render("login", {
+          messge: "Incorrect Username and Password",
+        });
+      } else {
+        const solvepwd = await bcrypt.compare(pwd, result[0].password);
+        const data = { ...result[0] };
+        if (!solvepwd) {
+          return res.render("login", { messge: "Incorrect Password" });
+        } else {
+          const accessToken = jwt.sign(
+            { email: data.email },
+            process.env.SECRET,
+            { expiresIn: "10m" }
+          );
+          res.cookie("accessToken", accessToken, { httpOnly: true });
+          return res.render("index", { name: data.username, action: "Login" });
+        }
+      }
+    }
+  );
+};
+module.exports = {
+  register,
+  login,
 };
