@@ -9,7 +9,7 @@ register = (req, res) => {
     [email],
     async (err, result) => {
       if (err) {
-        console.log(err);
+        return res.render("register", { messge: "Please Try again!" });
       }
       if (result.length > 0) {
         return res.render("register", {
@@ -33,7 +33,7 @@ register = (req, res) => {
         },
         (err, result) => {
           if (err) {
-            console.log(err);
+            return res.render("register", { messge: "Please Signup again!" });
           } else {
             res.cookie("accessToken", accessToken, { httpOnly: true });
             return res.render("index", {
@@ -54,12 +54,16 @@ login = (req, res) => {
     [email],
     async (err, result) => {
       if (err) {
-        console.log(err);
         return res.render("login", {
           messge: "Incorrect Username and Password",
         });
       } else {
-        const solvepwd = await bcrypt.compare(pwd, result[0].password);
+        if (result.length === 0) {
+          return res.render("login", {
+            messge: "User doesn't not exit, Please SignUp",
+          });
+        }
+        const solvepwd = bcrypt.compare(pwd, result[0].password);
         const data = { ...result[0] };
         if (!solvepwd) {
           return res.render("login", { messge: "Incorrect Password" });
