@@ -19,4 +19,8 @@ router.get("/logout", (req, res) => {
   res.render("message", { message: "See You Next Time!" });
 });
 
+router.get("/profile", checkToken, (req, res) => {
+  res.render("profile", { name: res.data.name, action: res.data.email });
+});
+
 module.exports = router;
